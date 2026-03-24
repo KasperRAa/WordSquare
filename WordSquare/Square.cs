@@ -35,8 +35,6 @@ namespace WordSquare
 
         public bool Advance(char c)
         {
-            if (!IsValid()) return false;
-
             int len = Words.Length;
             if (len >= Width * Height) return false;
 
@@ -82,7 +80,7 @@ namespace WordSquare
         public bool RowDeveloping(int i)
         {
             int len = Words.Length;
-            if (Width * (i + 1) + i <= len) return false;
+            if (len >= (1 + i) * Width) return false;
             return _rows[i].IsPartial;
         }
         public bool RowComplete(int i)
@@ -93,13 +91,13 @@ namespace WordSquare
         public bool IsComplete()
         {
             for (int x = 0; x < Width; x++) if (!ColumnComplete(x)) return false;
-            for (int y = 0; y < Width; y++) if (!RowComplete(y)) return false;
+            for (int y = 0; y < Height; y++) if (!RowComplete(y)) return false;
             return true;
         }
         public bool IsValid()
         {
             for (int x = 0; x < Width; x++) if (!ColumnComplete(x) && !ColumnDeveloping(x)) return false;
-            for (int y = 0; y < Width; y++) if (!RowComplete(y) && !RowDeveloping(y)) return false;
+            for (int y = 0; y < Height; y++) if (!RowComplete(y) && !RowDeveloping(y)) return false;
             return true;
         }
     }
