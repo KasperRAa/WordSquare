@@ -8,24 +8,34 @@ namespace WordSquare
 {
     internal class Node
     {
-        public bool IsPartial { get; private set; }
-        public bool IsValidWord { get; private set; }
+        public bool IsPartial 
+        {
+            get
+            {
+                return _remainders.Count > 1 || _remainders.Count == 1 && !_remainders.Contains(0);
+            }
+        }
+        public bool IsValidWord
+        {
+            get
+            {
+                return _remainders.Contains(0);
+            }
+        }
         public readonly string Word;
         public Node? Parent;
 
         private Dictionary<char, Node> _nodes;
+        private HashSet<int> _remainders;
 
-        public Node()
-        {
-            Word = "";
-            _nodes = new();
-            Parent = null;
-        }
-        public Node(string word, Node parent)
+        public Node() : this ("", null)
+        { }
+        public Node(string word, Node? parent)
         {
             Word = word;
             _nodes = new();
             Parent = parent;
+            _remainders = new();
         }
 
         public Node Add(char c)
@@ -42,15 +52,19 @@ namespace WordSquare
 
         public void FinaliseWord()
         {
-            IsValidWord = true;
+            _remainders.Add(0);
         }
         public void Finalise()
         {
             if (_nodes.Count != 0)
             {
-                IsPartial = true;
-                foreach (var node in _nodes.Values) node.Finalise();
+                foreach (var node in _nodes.Values)
+                {
+                    node.Finalise();
+                    foreach (var n in node._remainders) _remainders.Add(n + 1);
+                }
             }
         }
+        public bool HasRemainder(int n) => _remainders.Contains(n);
     }
 }

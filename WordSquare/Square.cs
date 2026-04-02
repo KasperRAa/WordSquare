@@ -32,16 +32,28 @@ namespace WordSquare
         }
         public Square(int size, WordTree tree) : this(size, size, tree) { }
 
-
         public bool Advance(char c)
         {
             int len = Words.Length;
             if (len >= Width * Height) return false;
 
-            if (!_rows[len / Width].Advance(c)) return false;
-            if (!_columns[len % Width].Advance(c))
+            int rowIndex = len / Width;
+            int columnIndex = len % Width;
+            Graft row = _rows[rowIndex];
+            Graft column = _columns[columnIndex];
+
+            if (!row.Advance(c)) return false;
+            if (!column.Advance(c))
             {
-                _rows[len / Width].Back();
+                row.Back();
+                return false;
+            }
+            int horizontalRemainder = Width - columnIndex - 1;
+            int verticalRemainder = Height - rowIndex - 1;
+            if (!column.HasRemainder(verticalRemainder) || !row.HasRemainder(horizontalRemainder))
+            {
+                column.Back();
+                row.Back();
                 return false;
             }
 
@@ -52,7 +64,7 @@ namespace WordSquare
                 Back();
                 return false;
             }
-
+            
             return true;
         }
 

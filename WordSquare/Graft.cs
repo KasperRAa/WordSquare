@@ -35,6 +35,10 @@ namespace WordSquare
         public Graft(Node node)
         {
             _node = node;
+            //node = node.Advance('a');
+            //node = node.Advance('a');
+            //for (int i = 0; i < 5; i++) Console.WriteLine($"{i}|{node.HasRemainder(i)}");
+            //Console.ReadKey();
         }
 
         public bool Advance(char c)
@@ -51,5 +55,6 @@ namespace WordSquare
         {
             if (_node.Parent != null) _node = _node.Parent;
         }
+        public bool HasRemainder(int n) => _node.HasRemainder(n);
     }
 }
